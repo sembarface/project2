@@ -30,6 +30,11 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
     <script src="https://cdn.tailwindcss.com" defer></script>
 </head>
 <body>
+    <noscript>
+    <div class="alert alert-warning">
+        В вашем браузере отключен JavaScript. Форма будет отправлена традиционным способом.
+    </div>
+</noscript>
 <header>
 <div class="navbar" id="navbar">
     <div class="mobile-nav">
