@@ -1,3 +1,14 @@
+<?php
+session_start();
+require 'db.php';
+
+// Проверяем, запрашивается ли API
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    require 'api.php';
+    exit;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
