@@ -60,6 +60,9 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
                     <a href="https://drupal-coding.com/import-migrate-upgrade" class="menulink innermenulink">МИГРАЦИЯ</a>
                 </li>
                 <li class="innermenuline">
+                    <a href ="login.php">ЗАЛОГИНИТСЯ</a></div>
+                </li>
+                <li class="innermenuline">
                     <a href="https://drupal-coding.com/backup" class="menulink innermenulink">БЭКАПЫ</a>
                 </li>
                 <li class="innermenuline">
@@ -81,6 +84,9 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
                 <div class="triangle"></div>
             </div>
             <ul class="innermenu">
+                <li class="innermenuline">
+                    <a href ="login.php">ЗАЛОГИНИТСЯ</a></div>
+                </li>
                 <li class="innermenuline">
                     <a href="https://drupal-coding.com/team#team" class="menulink innermenulink">КОМАНДА</a>
                 </li>
@@ -107,6 +113,9 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
             </div>
             <ul class="innermenu">
                 <li class="innermenuline">
+                    <a href ="login.php">ЗАЛОГИНИТСЯ</a></div>
+                </li>
+                <li class="innermenuline">
                     <a href="https://drupal-coding.com/import-migrate-upgrade" class="menulink innermenulink">МИГРАЦИЯ</a>
                 </li>
                 <li class="innermenuline">
@@ -131,6 +140,9 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
                 <div class="triangle"></div>
             </div>
             <ul class="innermenu">
+                <li class="innermenuline">
+                    <a href ="login.php">ЗАЛОГИНИТСЯ</a></div>
+                </li>
                 <li class="innermenuline">
                     <a href="https://drupal-coding.com/team#team" class="menulink innermenulink">КОМАНДА</a>
                 </li>
