@@ -1,4 +1,11 @@
 <?php
+// Включим логирование ошибок
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Логирование в файл
+file_put_contents('api.log', date('Y-m-d H:i:s') . " - Request started\n", FILE_APPEND);
 header('Content-Type: application/json');
 session_start();
 require 'db.php';
