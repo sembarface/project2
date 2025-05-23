@@ -7,7 +7,53 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
     require 'api.php';
     exit;
 }
+$messages = [];
+$errors = [];
+$values = [];
 
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if (!empty($_COOKIE['save'])) {
+        setcookie('save', '', time() - 3600);
+        $messages[] = 'Спасибо, результаты сохранены.';
+        
+        if (!empty($_COOKIE['login']) && !empty($_COOKIE['pass'])) {
+            $messages[] = sprintf(
+                'Вы можете <a href="login.php">войти</a> с логином <strong>%s</strong> и паролем <strong>%s</strong> для изменения данных.',
+                htmlspecialchars($_COOKIE['login']),
+                htmlspecialchars($_COOKIE['pass'])
+            );
+        }
+    }
+
+    $field_names = ['name', 'phone', 'email', 'birthdate', 'gender', 'languages', 'bio', 'contract_accepted'];
+    foreach ($field_names as $field) {
+        $errors[$field] = !empty($_COOKIE[$field.'_error']) ? $_COOKIE[$field.'_error'] : '';
+        if (!empty($errors[$field])) {
+            setcookie($field.'_error', '', time() - 3600);
+        }
+        $values[$field] = empty($_COOKIE[$field.'_value']) ? '' : $_COOKIE[$field.'_value'];
+    }
+
+    if (!empty($_SESSION['login'])) {
+        try {
+            $stmt = $pdo->prepare("SELECT a.*, GROUP_CONCAT(l.name) as languages 
+                FROM applications a
+                LEFT JOIN application_languages al ON a.id = al.application_id
+                LEFT JOIN languages l ON al.language_id = l.id
+                WHERE a.login = ? 
+                GROUP BY a.id");
+            $stmt->execute([$_SESSION['login']]);
+            $user_data = $stmt->fetch();
+            
+            if ($user_data) {
+                $values = array_merge($values, $user_data);
+                $values['languages'] = $user_data['languages'] ? explode(',', $user_data['languages']) : [];
+            }
+        } catch (PDOException $e) {
+            $messages[] = '<div class="alert alert-danger">Ошибка загрузки данных: '.htmlspecialchars($e->getMessage()).'</div>';
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1356,7 +1402,38 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
                     <div class="col-md-6 col-xs-12 col-sm-6">
 
                         <div class="field form-container">
-        <form action="submit.php" method="POST" id="application-form">
+        <?php if (!empty($messages)): ?>
+            <div class="mb-3">
+                <?php foreach ($messages as $message): ?>
+                    <div class="alert alert-info"><?= $message ?></div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php 
+        $has_errors = false;
+        foreach ($errors as $error) {
+            if (!empty($error)) {
+                $has_errors = true;
+                break;
+            }
+        }
+        ?>
+        
+        <?php if ($has_errors): ?>
+            <div class="alert alert-danger mb-3">
+                <h4>Обнаружены ошибки:</h4>
+                <ul class="mb-0">
+                    <?php foreach ($errors as $field => $error): ?>
+                        <?php if (!empty($error)): ?>
+                            <li><?= htmlspecialchars($error) ?></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+        
+        <form action="submit.php" method="POST">
         <!-- ФИО -->
         <div class="form-group">
             <label for="name">ФИО:</label>
