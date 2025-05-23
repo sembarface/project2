@@ -1568,5 +1568,79 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     </div>
 </footer>
+    <script>
+$(document).ready(function() {
+    const form = $('#forma form');
+    
+    // Валидация на клиенте
+    function validateForm(data) {
+        const errors = {};
+        
+        // Пример валидации имени
+        if (!data.name || !/^[a-zA-Zа-яА-ЯёЁ\s]{1,150}$/u.test(data.name)) {
+            errors.name = 'ФИО должно содержать только буквы и пробелы (макс. 150 символов)';
+        }
+        
+        // Добавить другие проверки...
+        
+        return Object.keys(errors).length ? errors : null;
+    }
+    
+    form.on('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = {
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            email: formData.get('email'),
+            birthdate: formData.get('birthdate'),
+            gender: formData.get('gender'),
+            languages: formData.getAll('languages[]'),
+            bio: formData.get('bio'),
+            contract_accepted: formData.get('contract_accepted') ? 1 : 0
+        };
+        
+        // Валидация на клиенте
+        const clientErrors = validateForm(data);
+        if (clientErrors) {
+            // Показать ошибки пользователю
+            return;
+        }
+        
+        // Отправка через AJAX
+        const isUpdate = <?= !empty($_SESSION['login']) ? 'true' : 'false' ?>;
+        const method = isUpdate ? 'PUT' : 'POST';
+        
+        fetch('/api', {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                // Показать ошибки сервера
+                alert(data.error);
+            } else {
+                if (data.login && data.password) {
+                    // Показать данные нового пользователя
+                    alert(`Ваш логин: ${data.login}\nПароль: ${data.password}`);
+                }
+                // Обновить интерфейс
+                window.location.href = data.profile_url || 'index.php';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Fallback - отправить форму обычным способом
+            form.off('submit').submit();
+        });
+    });
+});
+</script>
 </body>
 </html>
